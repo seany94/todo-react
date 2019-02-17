@@ -28,7 +28,8 @@ class List extends React.Component {
 
   clickHandler(event){
     var newArray = this.state.list.slice();
-    newArray.push(event.target.value);
+    var date = moment().format('LLLL');
+    newArray.push(event.target.value + " * created on * : " + date);
     this.setState({word: "", list: newArray});
   }
 
@@ -81,7 +82,8 @@ class List extends React.Component {
     var newArray = this.state.list.slice();
     newArray.splice(element, 1);
     var doneArray = this.state.done.slice();
-    doneArray.push(event.target.value);
+    var date = moment().format('LLLL');
+    doneArray.push(event.target.value + " * marked done on * : " + date);
     this.setState({list: newArray, done: doneArray});
   }
 
@@ -93,7 +95,7 @@ class List extends React.Component {
       if(this.state.update === false){
         return (
         <div className="list">
-        <h1>Current Date & Time: {moment().add(24, 'hours').format('LLL')}</h1>
+        <h1>Current Date & Time: {moment().format('LLLL')}</h1>
           <input onChange={this.changeHandler} value={this.state.word} maxlength="10"/>
           <button onClick={this.clickHandler} value={this.state.word}>add item</button>
           <p>Characters left: {wordCount}</p>
@@ -111,7 +113,7 @@ class List extends React.Component {
       else{
         return (
         <div className="list">
-        <h1>Current Date & Time: {moment().add(24, 'hours').format('LLL')}</h1>
+        <h1>Current Date & Time: {moment().format('LLLL')}</h1>
           <input onChange={this.changeHandler} value={this.state.word} maxlength="10"/>
           <button onClick={this.clickHandler} value={this.state.word}>add item</button>
           <p>Characters left: {wordCount}</p>
@@ -134,8 +136,9 @@ class List extends React.Component {
 
 class Item extends React.Component{
     render() {
+        // console.log(this.props.date)
     return (
-        <li>{this.props.items} <button onClick={this.props.remove} value={this.props.items}>remove item</button> <button onClick={this.props.edit} value={this.props.items}>edit item</button> <button onClick={this.props.done} value={this.props.items}>mark done</button></li>
+        <li>{this.props.items} <button onClick={this.props.remove} value={this.props.items}>remove item</button> <button onClick={this.props.edit} value={this.props.items}>edit item</button> <button onClick={this.props.done} value={this.props.items}>mark done</button> {this.props.date}</li>
       );
     }
 }
