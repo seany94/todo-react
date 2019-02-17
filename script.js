@@ -7,12 +7,15 @@ class List extends React.Component {
     this.editHandler = this.editHandler.bind( this );
     this.editChange = this.editChange.bind( this );
     this.updateHandler = this.updateHandler.bind( this );
+    this.doneHandler = this.doneHandler.bind( this );
   }
 
   state = {
     list : [],
+    done : [],
     word : "",
-    edit: "",
+    edit : "",
+    update : false,
     new : "",
   }
 
@@ -30,18 +33,27 @@ class List extends React.Component {
   }
 
   removeHandler(event){
-    // console.log(this.state.list.indexOf(event.target.value))
+    // console.log(this.state.list.includes(event.target.value))
     var element = this.state.list.indexOf(event.target.value)
-    var newArray = this.state.list.slice();
-    newArray.splice(element, 1);
-    // console.log(newArray)
-    this.setState({word: "", list: newArray});
+    if(this.state.list.includes(event.target.value) == true){
+        var newArray = this.state.list.slice();
+        newArray.splice(element, 1);
+        // console.log(newArray)
+        this.setState({list: newArray});
+    }
+    else if(this.state.done.includes(event.target.value) == true){
+        var doneArray = this.state.done.slice();
+        doneArray.splice(element, 1);
+        // console.log(newArray)
+        this.setState({done: doneArray});
+    }
+
   }
 
   editHandler(event){
-    // console.log(this.state.new)
+    // console.log(this.checkClick)
     var element = this.state.list.indexOf(event.target.value)
-    this.setState({edit: element, new: event.target.value});
+    this.setState({edit: element, update: true, new: event.target.value});
   }
 
   editChange(event){
@@ -60,34 +72,68 @@ class List extends React.Component {
     var newArray = this.state.list.slice();
     newArray.push(editStr)
     // console.log(this)
-    this.setState({list: newArray});
+    this.setState({update: false, list: newArray});
     this.todoTextElem.value = '';
+  }
+
+  doneHandler(event){
+    var element = this.state.list.indexOf(event.target.value)
+    var newArray = this.state.list.slice();
+    newArray.splice(element, 1);
+    var doneArray = this.state.done.slice();
+    doneArray.push(event.target.value);
+    this.setState({list: newArray, done: doneArray});
   }
 
   render() {
       // render the list with a map() here
-      const todo = this.state.list.map(item => {return <Item items={item} remove={this.removeHandler} edit={this.editHandler}></Item>})
+      const todo = this.state.list.map(item => {return <Item items={item} remove={this.removeHandler} edit={this.editHandler} done={this.doneHandler}></Item>})
+      const doneList = this.state.done.map(item => {return <Item items={item} remove={this.removeHandler}></Item>})
       var wordCount = 10 - this.state.word.length
-      return (
+      if(this.state.update === false){
+        return (
+        <div className="list">
+          <input onChange={this.changeHandler} value={this.state.word} maxlength="10"/>
+          <button onClick={this.clickHandler} value={this.state.word}>add item</button>
+          <p>Characters left: {wordCount}</p>
+          Ongoing List
+          <ul>
+            {todo}
+          </ul>
+          Done List
+          <ul>
+            {doneList}
+          </ul>
+        </div>
+      );
+      }
+      else{
+        return (
         <div className="list">
           <input onChange={this.changeHandler} value={this.state.word} maxlength="10"/>
           <button onClick={this.clickHandler} value={this.state.word}>add item</button>
           <p>Characters left: {wordCount}</p>
           <input onChange={this.editChange} value={this.state.new} ref={el => this.todoTextElem = el} maxlength="10"/>
           <button onClick={this.updateHandler} value={this.state.new}>update</button>
+          <br/>
+          Ongoing List
           <ul>
             {todo}
           </ul>
+          Done List
+          <ul>
+            {doneList}
+          </ul>
         </div>
       );
+      }
   }
 }
 
 class Item extends React.Component{
     render() {
-
     return (
-        <li>{this.props.items} <button onClick={this.props.remove} value={this.props.items}>remove item</button> <button onClick={this.props.edit} value={this.props.items}>edit item</button></li>
+        <li>{this.props.items} <button onClick={this.props.remove} value={this.props.items}>remove item</button> <button onClick={this.props.edit} value={this.props.items}>edit item</button> <button onClick={this.props.done} value={this.props.items}>mark done</button></li>
       );
     }
 }
