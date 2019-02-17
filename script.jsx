@@ -93,6 +93,7 @@ class List extends React.Component {
       if(this.state.update === false){
         return (
         <div className="list">
+        <h1>Current Date & Time: {moment().add(24, 'hours').format('LLL')}</h1>
           <input onChange={this.changeHandler} value={this.state.word} maxlength="10"/>
           <button onClick={this.clickHandler} value={this.state.word}>add item</button>
           <p>Characters left: {wordCount}</p>
@@ -110,6 +111,7 @@ class List extends React.Component {
       else{
         return (
         <div className="list">
+        <h1>Current Date & Time: {moment().add(24, 'hours').format('LLL')}</h1>
           <input onChange={this.changeHandler} value={this.state.word} maxlength="10"/>
           <button onClick={this.clickHandler} value={this.state.word}>add item</button>
           <p>Characters left: {wordCount}</p>
